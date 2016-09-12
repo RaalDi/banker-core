@@ -1,2 +1,2 @@
-# banker-core
-Banker Core Library
+# banker-util
+Banker Util Library
