@@ -13,5 +13,5 @@ hs_err_pid*
 /bin/
 /target/
 /build/
-
+/.gradle/
 .DS_Store

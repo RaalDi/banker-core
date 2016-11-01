@@ -9,7 +9,7 @@ public interface ModelService<T> {
   // public void delete(T model);
   // public void deleteAll();
 
-  public T findOne(Long id);
+  public T findOne(long id);
 
   // public T find(T model);
 
@@ -17,6 +17,6 @@ public interface ModelService<T> {
 
   public boolean exists(T model);
 
-  public boolean exists(Long id);
+  public boolean exists(long id);
 
 }

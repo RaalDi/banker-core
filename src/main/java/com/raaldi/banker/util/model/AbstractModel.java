@@ -1,72 +1,80 @@
 package com.raaldi.banker.util.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
+import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
-@SuppressWarnings("serial")
+/** Base Entity Model Class. */
 @MappedSuperclass
 @Data
+@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public abstract class AbstractModel implements Serializable {
 
-  @Temporal(TemporalType.TIMESTAMP)
-  @Column(name = "created", insertable = true, updatable = false)
-  private Date created;
+  private static final long serialVersionUID = 7505914005524063242L;
 
-  @Temporal(TemporalType.TIMESTAMP)
-  @Column(name = "updated", insertable = false, updatable = true)
-  private Date updated;
-
+  /** The Created Date. */
   @NotNull
-  @Column(name = "created_uid", insertable = true, updatable = false)
-  private long createdUid;
+  @Column(name = "created_date", nullable = false, insertable = true, updatable = false)
+  @CreatedDate
+  private LocalDateTime createdDate;
 
-  @Column(name = "updated_uid", insertable = false, updatable = true)
-  private long updatedUid;
+  /** The Created User. */
+  @NotNull
+  @Column(name = "created_by", nullable = false, insertable = true, updatable = false)
+  @CreatedBy
+  private String createdBy;
 
+  /** The Modified Date. */
+  @Column(name = "modified_date", insertable = false, updatable = true)
+  @LastModifiedDate
+  private LocalDateTime modifiedDate;
+
+  /** The Modified User. */
+  @Column(name = "modified_by", insertable = false, updatable = true)
+  @LastModifiedBy
+  private String modifiedBy;
+
+  /** The Version Number. */
+  @JsonIgnore
   @Version
-  @Column(name = "optlock", nullable = false)
+  @NotNull
+  @Column(name = "version", nullable = false)
   private long version;
 
-  /** Sets the updated date. */
-  public void setUpdated(final Date updated) {
-
-    if (updatedUid == 0) {
-      throw new IllegalArgumentException("updatedUid may not be zero(0) when updating the Entity");
-    }
-
-    this.updated = updated == null ? null : new Date(updated.getTime());
-  }
-
-  public Date getUpdated() {
-    return updated == null ? null : new Date(updated.getTime());
-  }
-
-  public void setCreated(final Date created) {
-    this.created = created == null ? null : new Date(created.getTime());
-  }
-
-  public Date getCreated() {
-    return created == null ? null : new Date(created.getTime());
-  }
-
-  @PrePersist
-  public void onPersist() {
-    this.setCreated(new Date());
-  }
-
-  @PreUpdate
-  public void onUpdate() {
-    this.setUpdated(new Date());
-  }
+  /**
+   * Sets the updated date. public void setUpdatedDate(final long updated) {
+   * 
+   * if (updated != null && modifiedBy == null) { throw new
+   * IllegalArgumentException("modifiedBy may not be NULL when updating the
+   * Entity"); }
+   * 
+   * this.updatedAt = updated; }
+   * 
+   * @PrePersist public void onPrePersist() {
+   *             this.setCreated(LocalDateTime.now()); }
+   * 
+   * @PreUpdate public void onPreUpdate() {
+   *            this.setUpdated(LocalDateTime.now()); }
+   * 
+   * @PreRemove public void onPreRemove() {
+   * 
+   *            }
+   */
 }
