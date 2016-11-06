@@ -1,5 +1,5 @@
 package com.raaldi.banker.util;
 
-public enum EnumSessionState {
+public enum SessionState {
   STARTING, STARTED, ENDING, ENDED
 }
